@@ -1,0 +1,17 @@
+#docker compose file 
+
+services:
+
+
+  db:
+    image: postgres:9.4
+	
+  nodejs:
+    image: 
+		- node-web-app
+	depends_on:
+		- postgres:9.4
+	ports:
+		- 49160:8080
+
+  
