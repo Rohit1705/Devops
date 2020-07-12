@@ -1,0 +1,119 @@
+#creation of AWS instance 
+provider "aws" {
+  region     = "us-west-2"
+  access_key = "PUT-YOUR-ACCESS-KEY-HERE"
+  secret_key = "PUT-YOUR-SECRET-KEY-HERE"
+}
+
+resource "aws_instance" "Ubuntu18.04" {
+   ami = "ami-0d221091ef7082bcf"
+   instance_type = "t2.micro"
+}
+
+
+# Setting up the docker on the same instance
+
+# Update Your System
+sudo apt update
+
+# Install Prerequisite Packages
+
+sudo apt-get install curl apt-transport-https ca-certificates software-properties-common
+
+# Add the Docker Repositories
+
+First, we add the GPG key, by entering the following command in the command line:
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+
+Next, we add the repository:
+
+
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt update
+
+ Install Docker on Ubuntu 18.04:
+ 
+ sudo apt install docker-ce
+ sudo systemctl status docker
+ 
+ 
+ 
+ 
+ # Creation of package.json file that describes your app and its dependencies
+ 
+ {
+  "name": "docker_web_app",
+  "version": "1.0.0",
+  "description": "Node.js on Docker",
+  "author": "First Last <first.last@example.com>",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.16.1"
+  }
+}
+
+# With your new package.json file, run npm install. If you are using npm version 5 or later, this will generate a package-lock.json file which will be copied to your Docker image
+
+
+# Then, create a server.js file that defines a web app using the Express.js framework
+
+'use strict';
+
+const express = require('express');
+
+// Constants
+const PORT = 8080;
+const HOST = '0.0.0.0';
+
+// App
+const app = express();
+app.get('/', (req, res) => {
+  res.send('Hello World');
+});
+
+app.listen(PORT, HOST);
+console.log(`Running on http://${HOST}:${PORT}`);
+
+
+# Creation of Node js docker file 
+
+FROM node:12
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY package*.json ./
+
+RUN npm install
+# If you are building your code for production
+# RUN npm ci --only=production
+
+# Bundle app source
+COPY . .
+
+EXPOSE 8080
+CMD [ "node", "server.js" ]
+
+# Build the docker image out of the docker file 
+
+docker build -t node-web-app .
+
+# Running the docker image 
+ 
+ 
+ docker run -p 49160:8080 -d node-web-app
+ 
+ 
+ 
+ # creating the database container
+ 
+ docker run -d --name=db postgres:latest
+ 
